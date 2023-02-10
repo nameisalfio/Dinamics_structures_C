@@ -88,11 +88,6 @@ Node* search(List* list, int val)
         return NULL;
     }
 
-    /*
-    if(list->head->key == val)
-        return list->head;
-    */
-
     Node* cur = list->head;
     while(cur->next && cur->key != val)
         cur = cur->next;

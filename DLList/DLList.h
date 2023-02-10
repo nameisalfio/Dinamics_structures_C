@@ -3,12 +3,11 @@
 
 #include "Node.h"
 
-struct DLList
+typedef struct DLList
 {
     Node* head;
     Node* tail;
-};
-typedef struct DLList DLList;
+}DLList;
 
 bool isEmpty(DLList* list)
 {

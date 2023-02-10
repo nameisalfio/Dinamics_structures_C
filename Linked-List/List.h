@@ -3,11 +3,10 @@
 
 #include "Node.h"
 
-struct List
+typedef struct List
 {
     Node* head;
-};
-typedef struct List List;
+}List;
 
 bool isEmpty(List* list)
 {

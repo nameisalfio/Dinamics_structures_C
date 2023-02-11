@@ -302,6 +302,39 @@ Node* removeNode(Bst* bst, int val)
 
 }
 
+//DISTANCE-FROM-SUCCESSOR
+int from_successor(Bst* bst, int val)
+{
+    Node* ptr = search(bst, val);
+    int count = 0;
+    if(!ptr || ptr == max(bst))
+        return -1;
+
+    //Case 1: node has a right subtree
+    if(ptr->right)
+    {
+        ptr = ptr->right;
+        count ++;
+        while(ptr->left)
+        {
+            ptr = ptr->left;
+            count ++;
+        }
+        return count;
+    }
+
+    //Case 2: node hasn't a right subtree
+    Node* y = ptr->parent;
+    count ++;
+    while(ptr && isRightChild(ptr))
+    {
+        ptr = ptr->parent;
+        y = y->parent;
+        count ++;
+    }
+    return count;
+}
+
 //DEPT
 int bst_depth(Node* ptr)
 {

@@ -11,6 +11,8 @@ typedef struct Node
 
 void printNode(Node* node)
 {
+    if(!node)
+        puts("NULLPTR");
     printf("\n(%d)", node->key);
 }
 

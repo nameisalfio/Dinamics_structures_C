@@ -8,7 +8,35 @@ typedef struct Bst
     Node* root;
 }Bst;
 
+//IS-EMPTY
 bool isEmpty(Bst* bst){return !bst->root;}
+
+//IS-LEAF
+bool isLeaf(Node* node){return(!node->right && !node->left);}
+
+//IS-LEFT-CHILD
+bool isLeftChild(Node* node)
+{
+    if(node->parent)
+        return node == node->parent->left;
+    return false;
+}
+
+//IS-RIGHT-CHILD
+bool isRightChild(Node* node)
+{
+    if(node->parent)
+        return node == node->parent->right;
+    return false;
+}
+
+//SWAP-KEYS
+void swap_keys(Node* x, Node* y)
+{
+    int swap = x->key;
+    x->key = y->key;
+    y->key = swap;
+}
 
 //INSERT
 void bst_insert(Bst* bst, Node* ptr, int val)
@@ -119,7 +147,162 @@ Node* search(Bst* bst, int val)
     return bst_search(bst->root, val);
 }
 
-//FIND DEPT
+//MAX
+Node* bst_max(Node* from)
+{
+    Node* ptr = from;
+    while(ptr->right)
+        ptr = ptr->right;
+    return ptr;
+}
+Node* max(Bst* bst)
+{
+    if(isEmpty(bst))
+    {
+        puts("Empty bst");
+        return NULL;
+    }
+    return bst_max(bst->root);
+}
+
+//MIN
+Node* bst_min(Node* from)
+{
+    Node* ptr = from;
+    while(ptr->left)
+        ptr = ptr->left;
+    return ptr;
+}
+Node* min(Bst* bst)
+{
+    if(isEmpty(bst))
+    {
+        puts("Empty bst");
+        return NULL;
+    }
+    return bst_min(bst->root);
+}
+
+//SUCCESSOR
+Node* bst_successor(Node* x)
+{
+    if(x->right) 
+        return bst_min(x->right);
+
+    Node* y = x->parent;
+    while(x && isRightChild(x))  //until x is a right-child
+    {
+        x = y;
+        y = y->parent;
+    }
+    return y;
+}
+Node* successor(Bst* bst, int val)
+{
+    Node* ptr = search(bst, val);
+    if(!ptr || ptr == max(bst))
+    {
+        puts("...successor doesn't exist...");
+        return NULL;
+    }
+    return bst_successor(ptr);
+}
+
+//PREDECESSOR
+Node* bst_predecessor(Node* x)
+{
+    if(x->left) 
+        return bst_max(x->left);
+
+    Node* y = x->parent;
+    while(x && isLeftChild(x))  //until x is a left-child
+    {
+        x = y;
+        y = y->parent;
+    }
+    return y;
+}
+Node* predecessor(Bst* bst, int val)
+{
+    Node* ptr = search(bst, val);
+    if(!ptr || ptr == min(bst))
+    {
+        puts("...predecessor doesn't exist...");
+        return NULL;
+    }
+    return bst_predecessor(ptr);
+}
+
+//REMOVE
+Node* bst_removeNode(Node* node)
+{
+    //Case 1: the node to be removed is a leaf
+    if(isLeaf(node))
+    {
+        if(isLeftChild(node))
+            node->parent->left = NULL;
+
+        if(isRightChild(node))
+            node->parent->right = NULL;
+
+        return node;
+    }
+
+    //Case 2: the node to be removed has just one child
+    if(!node->right && node->left)
+    {
+        node->left->parent = node->parent;
+
+        if(isLeftChild(node))
+            node->parent->left = node->left;
+
+        if(isRightChild(node))
+            node->parent->right = node->left;
+
+        return node;
+    }
+
+    if(!node->left && node->right)
+    {
+        node->right->parent = node->parent;
+
+        if(isLeftChild(node))
+            node->parent->left = node->right;
+
+        if(isRightChild(node))
+            node->parent->right = node->right;
+
+        return node;
+    }
+
+    return NULL;
+}
+Node* removeNode(Bst* bst, int val)
+{
+    Node* node = search(bst, val);
+
+    //  Empty tree or missing node with key searched
+    if(!node)
+        return NULL;
+    
+    Node* toremove = bst_removeNode(node);
+
+    //  if I am not in the third case I get back the value of 
+    //  the node(deleted with "bst_removeNode(node)")
+    if(toremove)
+        return toremove;
+
+    // Case 3: the node to be removed has two children
+    Node* succ = bst_successor(node);
+    swap_keys(node, succ);
+
+    // definitely case 1 or case 2
+    toremove = bst_removeNode(succ);
+    return toremove;
+
+}
+
+//DEPT
 int bst_depth(Node* ptr)
 {
     int deep = 0;

@@ -335,6 +335,72 @@ int from_successor(Bst* bst, int val)
     return count;
 }
 
+//DISTANCE-BETWEEN-NODES
+int from_start(Node* node_h, Node* start)
+{
+    if(node_h->key == start->key)
+        return 0;
+    
+    Node* tmp = start;
+    int count = 0;
+
+    while(tmp && tmp->key != node_h->key)
+    {
+        if(node_h->key > tmp->key)
+            tmp = tmp->right;
+        else
+            tmp = tmp->left;
+        count ++;
+    }
+
+    if(!tmp)
+        return -1;
+    else    
+        return count;
+}
+
+int between_nodes(Bst* bst, int k, int h)
+{
+    Node* node_k = search(bst, k);
+    Node* node_h = search(bst, h);
+    
+    if(!node_k || !node_h)
+    {
+        puts("Chiavi errate");
+        exit -1;
+    }
+    int count = 0;
+
+    if(k <= h)
+    {
+        Node* tmp = node_k;
+        bool flag = true;
+
+        while(tmp && flag)
+        {
+            int distance = from_start(node_h, tmp);
+
+            if(distance == 0)
+                flag = false;
+
+            else if(distance == -1)
+            {
+                tmp = tmp->parent;
+                count ++;
+            }
+            else
+            {
+                count += distance;
+                flag = false;
+            }
+        }
+        return count;
+
+    }        
+    else
+        return between_nodes(bst, h, k);
+}
+
 //DEPT
 int bst_depth(Node* ptr)
 {

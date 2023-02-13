@@ -52,7 +52,6 @@ int main()
     5       15           lv.2
 */
 
-    printf("Distance from 25 to successor : %d\n", from_successor(&bst, 25));
-    printf("Distance from 15 to successor : %d\n", from_successor(&bst, 15));
-
+    printf("\nDistance from 15 to successor : %d\n", from_successor(&bst, 15));
+    printf("Distance from 15 to 25 : %d\n", between_nodes(&bst, 5, 25));
 }

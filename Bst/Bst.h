@@ -2,6 +2,7 @@
 #define BST_H
 
 #include "Node.h"
+#include "List.h"
 
 typedef struct Bst
 {
@@ -86,6 +87,11 @@ void bst_pre_order(Node* ptr)
 }
 void pre_order(Bst* bst)
 {
+    if(isEmpty(bst))
+    {
+        puts("Empty bst");
+        return;
+    }
     printf("\nPre-order vist\n--------------");
     bst_pre_order(bst->root);
     printf("\n");
@@ -102,6 +108,11 @@ void bst_in_order(Node* ptr)
 }
 void in_order(Bst* bst)
 {
+    if(isEmpty(bst))
+    {
+        puts("Empty bst");
+        return;
+    }
     printf("\nIn-order vist\n--------------");
     bst_in_order(bst->root);
     printf("\n");
@@ -118,6 +129,11 @@ void bst_post_order(Node* ptr)
 }
 void post_order(Bst* bst)
 {
+    if(isEmpty(bst))
+    {
+        puts("Empty bst");
+        return;
+    }
     printf("\nPost-order vist\n--------------");
     bst_post_order(bst->root);
     printf("\n");
@@ -358,7 +374,6 @@ int from_start(Node* node_h, Node* start)
     else    
         return count;
 }
-
 int between_nodes(Bst* bst, int k, int h)
 {
     Node* node_k = search(bst, k);
@@ -419,6 +434,40 @@ int depth(Bst* bst, int val)
         return -1;
     //printf("Eccolo --> %d", bst_depth(node));
     return bst_depth(node);
+}
+
+//LEVEL-ORDER
+void bst_level_order(Node* x)
+{
+    List* l = (List*)malloc(sizeof(List));
+    insertHead(l, x->key);
+    while(!Empty(l))
+    {
+        int key = extract(l)->key;
+        Node* cur = (Node*)malloc(sizeof(Node));
+        cur->key = key;
+        if(!cur)
+            printf(" (NIL) ");
+        else
+        {
+            printNode(cur);
+            printNode(cur->left);
+            //insertHead(l, cur->left->key);
+            //insertHead(l, cur->right->key);
+        }
+    }
+    free(l);
+}
+void level_order(Bst* bst)
+{
+    if(isEmpty(bst))
+    {
+        puts("Empty bst");
+        return;
+    }
+    printf("\nLevel-order vist\n--------------");
+    bst_level_order(bst->root);
+    printf("\n");
 }
 
 #endif

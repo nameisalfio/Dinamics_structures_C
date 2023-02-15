@@ -54,4 +54,5 @@ int main()
 
     printf("\nDistance from 15 to successor : %d\n", from_successor(&bst, 15));
     printf("Distance from 15 to 25 : %d\n", between_nodes(&bst, 5, 25));
+    level_order(&bst);
 }

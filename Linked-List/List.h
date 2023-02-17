@@ -46,6 +46,35 @@ void insertTail(List* list, int val)
     cur->next = toinsert;
 }
 
+void insertInOrder(List* list, int val)
+{
+    if(isEmpty(list) || val <= list->head->key)
+    {
+        insertHead(list, val);
+        return;
+    }
+
+    Node* cur = list->head;
+    while(cur->next && val >= cur->key)
+    {
+        if(val < cur->next->key)
+            break;
+        cur = cur->next;
+    }
+
+    if(!cur->next)
+    {
+        insertTail(list, val);
+        return;
+    }
+
+    Node* toinsert = (Node*) malloc(sizeof(Node));
+    toinsert->key = val;
+    toinsert->next = cur->next;
+    cur->next = toinsert;
+    return;
+}
+
 void removeHead(List* list)
 {
     if(isEmpty(list))

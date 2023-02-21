@@ -6,7 +6,9 @@
 int main()
 {
     List l;
-    insert(&l, 4);
+    Node* n = malloc(sizeof(Node*));
+    n->key = 4;
+    insertHead(&l, n);
     extract(&l);
     printList(&l);
 }

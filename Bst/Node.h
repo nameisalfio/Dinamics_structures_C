@@ -12,7 +12,10 @@ typedef struct Node
 void printNode(Node* node)
 {
     if(!node)
+    {
         puts("NULLPTR");
+        return;
+    }
     printf("\n(%d)", node->key);
 }
 

@@ -1,15 +1,18 @@
 #ifndef LIST_H
 #define LIST_H
 
+#include "Node.h"
+
 typedef struct l_node
 {
-    int key;
+    Node* k;
     struct l_node* next;
 }l_node;
 
 void print_lnode(l_node* node)
 {
-    printf("[%d]", node->key);
+    if(node)
+        printf("[%d]", node->k->key);
 }
 typedef struct List
 {
@@ -21,11 +24,10 @@ bool Empty(List* list)
     return !(list->head);
 }
 
-void insertHead(List* list, int val)
+void insertHead(List* list, Node* val)
 {    
     l_node* toinsert = (l_node*)malloc(sizeof(l_node));
-    toinsert->key = val;
-    toinsert->next = NULL;
+    toinsert->k = val;
 
     if(Empty(list))
     {
@@ -39,17 +41,16 @@ void insertHead(List* list, int val)
     cur->next = toinsert;
 }
 
-l_node* extract(List* list)
+Node* extract(List* list)
 {
     if(Empty(list))
     {
         puts("\nEmpty List\n");
         return NULL;
     }
-
     l_node* toremove = list->head;
     list->head = list->head->next;
-    return toremove;
+    return toremove->k;
 }
 
 void printList(List* list)

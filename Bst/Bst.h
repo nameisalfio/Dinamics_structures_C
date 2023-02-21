@@ -440,7 +440,7 @@ int depth(Bst* bst, int val)
 void bst_level_order(Node* x)
 {
     List* l = (List*)malloc(sizeof(List));
-    insertHead(l, x->key);
+    insertHead(l, x);
     while(!Empty(l))
     {
         int key = extract(l)->key;
@@ -451,9 +451,9 @@ void bst_level_order(Node* x)
         else
         {
             printNode(cur);
-            printNode(cur->left);
-            //insertHead(l, cur->left->key);
-            //insertHead(l, cur->right->key);
+            printf("\n");
+            insertHead(l, cur->left);
+            insertHead(l, cur->right);
         }
     }
     free(l);

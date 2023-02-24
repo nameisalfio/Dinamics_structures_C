@@ -428,55 +428,61 @@ int bst_depth(Node* ptr)
     return deep;
 }
 int depth(Bst* bst, int val)
+{//DEPT
+int bst_depth(Node* ptr)
+{
+    int deep = 0;
+    while(ptr->parent)
+    {
+        deep ++;
+        ptr = ptr->parent;
+    }
+    return deep;
+}
+int depth(Bst* bst, int val)
 {
     Node* node = search(bst, val);
     if(!node)
         return -1;
-    //printf("Eccolo --> %d", bst_depth(node));
+    return bst_depth(node);
+}
+    Node* node = search(bst, val);
+    if(!node)
+        return -1;
     return bst_depth(node);
 }
 
-/*//LEVEL-ORDER
+//LEVEL-ORDER
 void bst_level_order(Node* x)
 {
-    Queue* l = (Queue*)malloc(sizeof(Queue));
-    push(l, x);
-    while(!Empty(l))
+    Queue* q = (Queue*)malloc(sizeof(Queue));
+    push(q, x);
+    while(!Empty(q))
     {
         Node* cur = (Node*)malloc(sizeof(Node));
-        cur = pop(l);
-
+        cur = pop(q);
         if(!cur)
             printf("(NIL) ");
         else
         {
             printf("(%d) ", cur->key);
-            push(l, cur->left);
-            push(l, cur->right);
+            printf("\t%d\n", bst_depth(cur));
+            push(q, cur->left);
+            push(q, cur->right);
         }
     }
-    free(l);
-}*/
-
-void bst_level_order(Node* root, int level) 
-{
-    if (!root ) 
-        return;
-    
-    bst_level_order(root->left, level + 1);
-    printf("%-8d  lv.%d\n", root->key, level);
-    bst_level_order(root->right, level + 1);
+    free(q);
 }
 
 void level_order(Bst* bst)
 {
     if(isEmpty(bst))
     {
-        puts("Empty bst");
+        puts(" (NIL) ");
         return;
     }
     printf("\nLevel-order vist\n--------------\n");
-    bst_level_order(bst->root, 0);
+    bst_level_order(bst->root);
     printf("\n");
 }
 

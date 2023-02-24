@@ -9,10 +9,10 @@ typedef struct q_node
     struct q_node* next;
 }q_node;
 
-void print_lnode(q_node* node)
+void printQnode(q_node* node)
 {
-    if(node)
-        printf("[%d]", node->k->key);
+    if(node && node->k)
+        printf("[%d] ", node->k->key);
 }
 typedef struct Queue
 {
@@ -51,6 +51,24 @@ Node* pop(Queue* queue)
     q_node* toremove = queue->head;
     queue->head = queue->head->next;
     return toremove->k;
+}
+
+void printQueue(Queue* queue)
+{
+    if(Empty(queue))
+    {
+        puts("\nEmpty queue\n");
+        return;
+    }
+
+    q_node* cur = (q_node*)malloc(sizeof(q_node));
+    cur = queue->head;
+    while(cur)
+    {
+        printQnode(cur);
+        cur = cur->next;
+    }
+    printf("\n");
 }
 
 #endif

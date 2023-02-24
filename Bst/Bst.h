@@ -2,7 +2,7 @@
 #define BST_H
 
 #include "Node.h"
-#include "List.h"
+#include "Queue.h"
 
 typedef struct Bst
 {
@@ -436,28 +436,38 @@ int depth(Bst* bst, int val)
     return bst_depth(node);
 }
 
-//LEVEL-ORDER
+/*//LEVEL-ORDER
 void bst_level_order(Node* x)
 {
-    List* l = (List*)malloc(sizeof(List));
-    insertHead(l, x);
+    Queue* l = (Queue*)malloc(sizeof(Queue));
+    push(l, x);
     while(!Empty(l))
     {
-        int key = extract(l)->key;
         Node* cur = (Node*)malloc(sizeof(Node));
-        cur->key = key;
+        cur = pop(l);
+
         if(!cur)
-            printf(" (NIL) ");
+            printf("(NIL) ");
         else
         {
-            printNode(cur);
-            printf("\n");
-            insertHead(l, cur->left);
-            insertHead(l, cur->right);
+            printf("(%d) ", cur->key);
+            push(l, cur->left);
+            push(l, cur->right);
         }
     }
     free(l);
+}*/
+
+void bst_level_order(Node* root, int level) 
+{
+    if (!root ) 
+        return;
+    
+    bst_level_order(root->left, level + 1);
+    printf("%-8d  lv.%d\n", root->key, level);
+    bst_level_order(root->right, level + 1);
 }
+
 void level_order(Bst* bst)
 {
     if(isEmpty(bst))
@@ -465,8 +475,8 @@ void level_order(Bst* bst)
         puts("Empty bst");
         return;
     }
-    printf("\nLevel-order vist\n--------------");
-    bst_level_order(bst->root);
+    printf("\nLevel-order vist\n--------------\n");
+    bst_level_order(bst->root, 0);
     printf("\n");
 }
 

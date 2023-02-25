@@ -8,8 +8,12 @@ typedef struct Vertex
 
 void printVertex(Vertex* v)
 {
-    if(v)
-        printf("[%d]", v->key);
+    if(!v)
+    {
+        puts("\tNULLPTR");
+        exit -1;
+    }
+    printf("[%d]", v->key);
 }
 
 #endif

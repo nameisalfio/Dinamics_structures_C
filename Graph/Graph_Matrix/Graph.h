@@ -1,7 +1,7 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
-#include "Vertex.h"
+#include "Queue.h"
 
 typedef struct Graph
 {
@@ -90,6 +90,85 @@ void addEdge(Graph* g, int val_1, int val_2)
     }
 }
 
+//Breadth-First Search
+void BFS(Graph* g, int start)
+{
+    if(isEmpty(g))
+    {
+        puts("Graph is empty\n");
+        return;
+    }
+    if(search(g, start) == -1)
+    {
+        printf("Key %d not in the graph\n", start);
+        return;
+    }
+    printf("BFS from %d\n", start);
+    bool visited[g->n_vertex];
+    for(int i = 0; i < g->n_vertex; i++)
+        visited[i] = false;
+
+    Queue* queue = malloc(sizeof(Queue));
+    queue->head = NULL;
+
+    visited[start] = true;
+    push(queue, start);
+
+    while(!Empty(queue))
+    {
+        int current = pop(queue)->k;
+        printVertex(g->vertices[current]);
+        printf(" ");
+
+        for(int i = 0; i < g->n_vertex; i++)
+        {
+            if(g->adj[current][i] && !visited[i])
+            {
+                visited[i] = true;
+                push(queue, i);
+            }
+        }
+    }
+    free(queue);
+    printf("\n\n");
+}
+
+//Depth-First Search
+void DFS_visit(Graph* g, int current, bool* visited)
+{
+    visited[current] = true;
+    printVertex(g->vertices[current]);
+    printf(" ");
+
+    for(int i = 0; i < g->n_vertex; i++)
+    {
+        if(g->adj[current][i] && !visited[i])
+            DFS_visit(g, i, visited);
+    }
+}
+
+void DFS(Graph* g, int start)
+{
+    if(isEmpty(g))
+    {
+        puts("Graph is empty\n");
+        return;
+    }
+    if(search(g, start) == -1)
+    {
+        printf("Key %d not in the graph\n", start);
+        return;
+    }
+    printf("DFS from %d\n", start);
+    bool visited[g->n_vertex];
+    for(int i = 0; i < g->n_vertex; i++)
+        visited[i] = false;
+
+    DFS_visit(g, start, visited);
+    printf("\n\n");
+}
+
+
 void printMatrix(Graph* g) 
 {
     if(isEmpty(g))
@@ -143,6 +222,7 @@ void printGraph(Graph* g)
             }
         }
     }
+    printf("\n");
 }
 
 #endif

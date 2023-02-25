@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <limits.h>
 
 #include "Graph.h"
 
@@ -27,13 +28,8 @@ int main()
     printGraph(&g);
     printMatrix(&g);
 
-    //BFS
+    removeVertex(&g, 1);
+    printGraph(&g);
+
     BFS(&g, 1);
-    BFS(&g, 2);
-    BFS(&g, 3);
-    
-    //DFS
-    DFS(&g, 1);
-    DFS(&g, 2);
-    DFS(&g, 3);
 }

@@ -22,11 +22,11 @@ bool isFull(Graph* g)
     return g->n_vertex == g->max_vertex;
 }
 
-void inizialize(Graph* g, int max, bool oriented) 
+void inizialize(Graph* g, int max, bool isOriented) 
 {
     g->n_vertex = 0;
     g->max_vertex = max;
-    g->isOriented = oriented;
+    g->isOriented = isOriented;
 
     g->vertices = malloc(sizeof(Vertex*) * g->max_vertex);
     for(int i = 0; i < g->max_vertex; i++)
@@ -46,15 +46,16 @@ int search(Graph* g, int val)
     if(isEmpty(g))
     {
         puts("Graph is empty\n");
-        return -1;
-    }	
+        exit -1;
+    }
 
     for(int i = 0; i < g->n_vertex; i++)
     {
         if(g->vertices[i]->key == val)
             return i;
     }
-    return -1;
+    printf("Error key %d not in the graph\n", val);
+    exit -1;
 }
 
 void addVertex(Graph* g, int val)
@@ -64,7 +65,19 @@ void addVertex(Graph* g, int val)
         puts("Graph is full\n");
         exit -1;
     }
-    g->vertices[g->n_vertex++]->key = val;
+
+    for(int i = 0; i < g->n_vertex; i++)
+    {
+        if(g->vertices[i]->key == val)
+        {
+            printf("Vertex with key %d already exists in the graph\n", val);
+            return;
+        }
+    }
+
+    g->vertices[g->n_vertex] = malloc(sizeof(Vertex));
+    g->vertices[g->n_vertex]->key = val;
+    g->n_vertex++;
 }
 
 void addEdge(Graph* g, int val_1, int val_2) 
@@ -72,38 +85,90 @@ void addEdge(Graph* g, int val_1, int val_2)
     int i = search(g, val_1);
     int j = search(g, val_2);
 
-    if(i != -1 && j != -1)
-    {
-        g->adj[i][j] = true;
-        if(!g->isOriented)
-            g->adj[j][i] = true;
-    }
-    else if(i == -1)
-    {
-        printf("Error key %d\n", val_1);
-        exit -1;
-    }
-    else if(j == -1)
-    {
-        printf("Error key %d\n", val_2);
-        exit -1;
-    }
+    g->adj[i][j] = true;
+    if(!g->isOriented)
+        g->adj[j][i] = true;
 }
 
-//Breadth-First Search
-void BFS(Graph* g, int start)
+void removeVertex(Graph* g, int val)
+{
+    if(isEmpty(g))
+    {
+        puts("Graph is empty\n");
+        exit -1;
+    }
+    
+    int idx = -1;
+    for(int i = 0; i < g->n_vertex; i++)
+    {
+        if(g->vertices[i]->key == val)
+        {
+            idx = i;
+            break;
+        }
+    }
+
+    if(idx == -1)
+    {
+        printf("Error key %d not in the graph\n", val);
+        exit -1;
+    }
+
+    // Remove edges connected to the vertex
+    for(int i = 0; i < g->n_vertex; i++)
+    {
+        g->adj[idx][i] = false;
+        g->adj[i][idx] = false;
+    }
+
+    free(g->vertices[idx]);
+
+    // Move last vertex to the deleted vertex position
+    g->vertices[idx] = g->vertices[g->n_vertex-1];
+
+    // Update adjacent matrix for moved vertex
+    for(int i = 0; i < g->n_vertex; i++)
+    {
+        if(g->adj[i][g->n_vertex-1])
+        {
+            g->adj[i][idx] = true;
+            g->adj[i][g->n_vertex-1] = false;
+        }
+        if(g->adj[g->n_vertex-1][i])
+        {
+            g->adj[idx][i] = true;
+            g->adj[g->n_vertex-1][i] = false;
+        }
+    }
+
+    // Decrement number of vertices
+    g->n_vertex--;
+}
+
+void removeEdge(Graph* g, int val_1, int val_2)
+{
+    int idx_1 = search(g, val_1);
+    int idx_2 = search(g, val_2);
+
+    g->adj[idx_1][idx_2] = false;
+    if(!g->isOriented)
+        g->adj[idx_2][idx_1] = false;
+}
+
+/*//Breadth-First Search
+void BFS(Graph* g, int source)
 {
     if(isEmpty(g))
     {
         puts("Graph is empty\n");
         return;
     }
-    if(search(g, start) == -1)
+    if(search(g, source) == -1)
     {
-        printf("Key %d not in the graph\n", start);
+        printf("Key %d not in the graph\n", source);
         return;
     }
-    printf("BFS from %d\n", start);
+    printf("BFS from %d\n", source);
     bool visited[g->n_vertex];
     for(int i = 0; i < g->n_vertex; i++)
         visited[i] = false;
@@ -111,8 +176,8 @@ void BFS(Graph* g, int start)
     Queue* queue = malloc(sizeof(Queue));
     queue->head = NULL;
 
-    visited[start] = true;
-    push(queue, start);
+    visited[source] = true;
+    push(queue, source);
 
     while(!Empty(queue))
     {
@@ -132,6 +197,76 @@ void BFS(Graph* g, int start)
     free(queue);
     printf("\n\n");
 }
+*/
+
+void BFS(Graph* g, int source)
+{
+    if(isEmpty(g))
+    {
+        puts("Graph is empty\n");
+        return;
+    }
+    if(search(g, source) == -1)
+    {
+        printf("Key %d not in the graph\n", source);
+        return;
+    }
+    printf("BFS from %d\n", source);
+    
+    bool visited[g->n_vertex];
+    int distance[g->n_vertex];
+    int parent[g->n_vertex];
+
+    for(int i = 0; i < g->n_vertex; i++) {
+        visited[i] = false;
+        distance[i] = INT_MAX;
+        parent[i] = -1;
+    }
+
+    Queue* queue = malloc(sizeof(Queue));
+    queue->head = NULL;
+
+    visited[source] = true;
+    distance[source] = 0;
+    push(queue, source);
+
+    while(!Empty(queue))
+    {
+        int current = pop(queue)->k;
+        printVertex(g->vertices[current]);
+        printf(" ");
+
+        for(int i = 0; i < g->n_vertex; i++)
+        {
+            if(g->adj[current][i] && !visited[i])
+            {
+                visited[i] = true;
+                distance[i] = distance[current] + 1;
+                parent[i] = current;
+                push(queue, i);
+            }
+        }
+    }
+
+    printf("\nShortest paths from %d:\n", source);
+
+    for (int i = 0; i < g->n_vertex; i++) {
+        if (distance[i] == INT_MAX) {
+            printf("Vertex %d is not reachable from source\n", i);
+        } else {
+            printf("Distance from %d to %d: %d. Path: ", source, i, distance[i]);
+            int j = i;
+            while (j != source) {
+                printf("%d ", j);
+                j = parent[j];
+            }
+            printf("%d\n", source);
+        }
+    }
+
+    free(queue);
+    printf("\n\n");
+}
 
 //Depth-First Search
 void DFS_visit(Graph* g, int current, bool* visited)
@@ -147,24 +282,24 @@ void DFS_visit(Graph* g, int current, bool* visited)
     }
 }
 
-void DFS(Graph* g, int start)
+void DFS(Graph* g, int source)
 {
     if(isEmpty(g))
     {
         puts("Graph is empty\n");
         return;
     }
-    if(search(g, start) == -1)
+    if(search(g, source) == -1)
     {
-        printf("Key %d not in the graph\n", start);
+        printf("Key %d not in the graph\n", source);
         return;
     }
-    printf("DFS from %d\n", start);
+    printf("DFS from %d\n", source);
     bool visited[g->n_vertex];
     for(int i = 0; i < g->n_vertex; i++)
         visited[i] = false;
 
-    DFS_visit(g, start, visited);
+    DFS_visit(g, source, visited);
     printf("\n\n");
 }
 

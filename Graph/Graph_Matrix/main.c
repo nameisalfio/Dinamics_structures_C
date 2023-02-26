@@ -26,10 +26,7 @@ int main()
     addEdge(&g, 4, 5);
     
     printGraph(&g);
-    printMatrix(&g);
-
-    removeVertex(&g, 1);
-    printGraph(&g);
+    //printMatrix(&g);
 
     BFS(&g, 1);
 }

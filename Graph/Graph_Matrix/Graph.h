@@ -46,7 +46,7 @@ int search(Graph* g, int val)
     if(isEmpty(g))
     {
         puts("Graph is empty\n");
-        exit -1;
+        exit (-1);
     }
 
     for(int i = 0; i < g->n_vertex; i++)
@@ -55,7 +55,7 @@ int search(Graph* g, int val)
             return i;
     }
     printf("Error key %d not in the graph\n", val);
-    exit -1;
+    exit (-1);
 }
 
 void addVertex(Graph* g, int val)
@@ -63,7 +63,7 @@ void addVertex(Graph* g, int val)
     if(isFull(g))
     {
         puts("Graph is full\n");
-        exit -1;
+        exit (-1);
     }
 
     for(int i = 0; i < g->n_vertex; i++)
@@ -95,7 +95,7 @@ void removeVertex(Graph* g, int val)
     if(isEmpty(g))
     {
         puts("Graph is empty\n");
-        exit -1;
+        exit (-1);
     }
     
     int idx = -1;
@@ -111,7 +111,7 @@ void removeVertex(Graph* g, int val)
     if(idx == -1)
     {
         printf("Error key %d not in the graph\n", val);
-        exit -1;
+        exit (-1);
     }
 
     // Remove edges connected to the vertex
@@ -211,23 +211,18 @@ void BFS(Graph* g, int source)
         printf("Key %d not in the graph\n", source);
         return;
     }
-    printf("BFS from %d\n", source);
-    
-    bool visited[g->n_vertex];
-    int distance[g->n_vertex];
-    int parent[g->n_vertex];
 
-    for(int i = 0; i < g->n_vertex; i++) {
-        visited[i] = false;
-        distance[i] = INT_MAX;
-        parent[i] = -1;
-    }
+    printf("BFS from %d\n", source);
+
+    int dist[g->n_vertex];
+    for(int i = 0; i < g->n_vertex; i++)
+        dist[i] = -1;
+
+    dist[source] = 0;
 
     Queue* queue = malloc(sizeof(Queue));
     queue->head = NULL;
 
-    visited[source] = true;
-    distance[source] = 0;
     push(queue, source);
 
     while(!Empty(queue))
@@ -238,34 +233,23 @@ void BFS(Graph* g, int source)
 
         for(int i = 0; i < g->n_vertex; i++)
         {
-            if(g->adj[current][i] && !visited[i])
+            if(g->adj[current][i] && dist[i] == -1)
             {
-                visited[i] = true;
-                distance[i] = distance[current] + 1;
-                parent[i] = current;
+                dist[i] = dist[current] + 1;
                 push(queue, i);
             }
         }
     }
-
-    printf("\nShortest paths from %d:\n", source);
-
-    for (int i = 0; i < g->n_vertex; i++) {
-        if (distance[i] == INT_MAX) {
-            printf("Vertex %d is not reachable from source\n", i);
-        } else {
-            printf("Distance from %d to %d: %d. Path: ", source, i, distance[i]);
-            int j = i;
-            while (j != source) {
-                printf("%d ", j);
-                j = parent[j];
-            }
-            printf("%d\n", source);
-        }
-    }
-
     free(queue);
+
     printf("\n\n");
+    for(int i = 1; i < g->n_vertex; i++) 
+    {
+        if(dist[i] != -1 && i != source)
+            printf("Shortest path from %d to %d --> %d\n", source, i, dist[i]);
+        else if (dist[i] == -1 && i != source) 
+            printf("Node %d is not reachable from node %d\n", i, source);
+    }
 }
 
 //Depth-First Search
@@ -287,12 +271,12 @@ void DFS(Graph* g, int source)
     if(isEmpty(g))
     {
         puts("Graph is empty\n");
-        return;
+        exit (-1);
     }
     if(search(g, source) == -1)
     {
         printf("Key %d not in the graph\n", source);
-        return;
+        exit (-1);
     }
     printf("DFS from %d\n", source);
     bool visited[g->n_vertex];
@@ -302,7 +286,6 @@ void DFS(Graph* g, int source)
     DFS_visit(g, source, visited);
     printf("\n\n");
 }
-
 
 void printMatrix(Graph* g) 
 {

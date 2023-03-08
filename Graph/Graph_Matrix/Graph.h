@@ -7,7 +7,7 @@ typedef struct Graph
 {
     Vertex** vertices;
     int max_vertex;
-    bool** adj; 
+    int** adj; 
     int n_vertex;
     bool isOriented;
 }Graph;
@@ -32,12 +32,12 @@ void inizialize(Graph* g, int max, bool isOriented)
     for(int i = 0; i < g->max_vertex; i++)
         g->vertices[i] = malloc(sizeof(Vertex));
 
-    g->adj = malloc(sizeof(bool*) * g->max_vertex);
+    g->adj = malloc(sizeof(int*) * g->max_vertex);
     for(int i = 0; i < g->max_vertex; i++)
     {
-        g->adj[i] = malloc(sizeof(bool) * g->max_vertex);
+        g->adj[i] = malloc(sizeof(int) * g->max_vertex);
         for(int j = 0; j < g->max_vertex; j++)
-            g->adj[i][j] = false;
+            g->adj[i][j] = 0;
     }
 }
 
@@ -80,14 +80,12 @@ void addVertex(Graph* g, int val)
     g->n_vertex++;
 }
 
-void addEdge(Graph* g, int val_1, int val_2) 
+void addEdge(Graph* g, int val_1, int val_2, int weight) 
 {
     int i = search(g, val_1);
     int j = search(g, val_2);
 
-    g->adj[i][j] = true;
-    if(!g->isOriented)
-        g->adj[j][i] = true;
+    g->adj[i][j] = weight;
 }
 
 void removeVertex(Graph* g, int val)
@@ -150,12 +148,10 @@ void removeEdge(Graph* g, int val_1, int val_2)
     int idx_1 = search(g, val_1);
     int idx_2 = search(g, val_2);
 
-    g->adj[idx_1][idx_2] = false;
-    if(!g->isOriented)
-        g->adj[idx_2][idx_1] = false;
+    g->adj[idx_1][idx_2] = 0;
 }
 
-/*//Breadth-First Search
+//Breadth-First Search
 void BFS(Graph* g, int source)
 {
     if(isEmpty(g))
@@ -197,8 +193,8 @@ void BFS(Graph* g, int source)
     free(queue);
     printf("\n\n");
 }
-*/
 
+/*
 void BFS(Graph* g, int source)
 {
     if(isEmpty(g))
@@ -251,6 +247,7 @@ void BFS(Graph* g, int source)
             printf("Node %d is not reachable from node %d\n", i, source);
     }
 }
+*/
 
 //Depth-First Search
 void DFS_visit(Graph* g, int current, bool* visited)
@@ -286,6 +283,8 @@ void DFS(Graph* g, int source)
     DFS_visit(g, source, visited);
     printf("\n\n");
 }
+
+bool BellmanFord(Graph* g, int source){}
 
 void printMatrix(Graph* g) 
 {
@@ -336,7 +335,7 @@ void printGraph(Graph* g)
                 printVertex(g->vertices[i]);
                 printf(" --- ");
                 printVertex(g->vertices[j]);
-                printf("\n");
+                printf("\tW = %d\n", g->adj[i][j]);
             }
         }
     }

@@ -428,24 +428,7 @@ int bst_depth(Node* ptr)
     return deep;
 }
 int depth(Bst* bst, int val)
-{//DEPT
-int bst_depth(Node* ptr)
 {
-    int deep = 0;
-    while(ptr->parent)
-    {
-        deep ++;
-        ptr = ptr->parent;
-    }
-    return deep;
-}
-int depth(Bst* bst, int val)
-{
-    Node* node = search(bst, val);
-    if(!node)
-        return -1;
-    return bst_depth(node);
-}
     Node* node = search(bst, val);
     if(!node)
         return -1;
